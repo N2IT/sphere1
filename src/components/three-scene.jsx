@@ -9,10 +9,18 @@ export function ThreeScene() {
   useEffect(() => {
     if (!containerRef.current) return
 
+    // Clear any existing canvas
+    while (containerRef.current.firstChild) {
+      containerRef.current.removeChild(containerRef.current.firstChild)
+    }
+
     // Scene setup
     const scene = new THREE.Scene()
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+    const renderer = new THREE.WebGLRenderer({ 
+      antialias: true, 
+      alpha: true 
+    })
     
     renderer.setSize(window.innerWidth, window.innerHeight)
     containerRef.current.appendChild(renderer.domElement)
@@ -113,10 +121,11 @@ export function ThreeScene() {
 
     window.addEventListener('resize', handleResize)
 
+    // Cleanup function
     return () => {
-      window.removeEventListener('resize', handleResize)
+      renderer.dispose()
       if (containerRef.current) {
-        containerRef.current.removeChild(renderer.domElement)
+        containerRef.current.innerHTML = ''
       }
     }
   }, [])

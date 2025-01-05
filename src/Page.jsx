@@ -13,25 +13,22 @@ export function PortfolioPage() {
   }, [])
 
   return (
-    <main className="min-h-screen bg-black text-white relative overflow-hidden">
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-radial from-blue-900/20 to-transparent z-0" />
-      
-      {/* Main content */}
-      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center">
-        {/* Three.js Scene */}
-        <div className="absolute inset-0 z-0">
-          <ThreeScene />
-        </div>
+    <div className="relative w-full h-screen overflow-hidden bg-black">
+      {/* Three.js Scene Container */}
+      <div className="absolute inset-0">
+        <ThreeScene />
+      </div>
 
-        {/* Text content */}
+      {/* Content Overlay */}
+      <div className="relative z-10 flex flex-col items-center justify-center h-full">
+        {/* Title Section */}
         <motion.div 
-          className="text-center z-10"
+          className="text-center mb-8"
           initial={{ opacity: 0, y: 20 }}
           animate={isLoaded ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 1, delay: 0.5 }}
         >
-          <h1 className="text-4xl md:text-6xl lg:text-7xl tracking-[0.3em] font-light mb-4">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl tracking-[0.3em] font-light text-white mb-4">
             YOUR NAME
           </h1>
           <p className="text-sm md:text-base tracking-[0.6em] text-blue-200/80 uppercase">
@@ -49,7 +46,7 @@ export function PortfolioPage() {
           <Navigation />
         </motion.div>
       </div>
-    </main>
+    </div>
   )
 }
 
