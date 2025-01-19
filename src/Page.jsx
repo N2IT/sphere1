@@ -29,7 +29,7 @@ export function PortfolioPage() {
           transition={{ duration: 1, delay: 0.5 }}
         >
           <h1 className="text-4xl md:text-6xl lg:text-7xl tracking-[0.3em] font-light text-white mb-4">
-            YOUR NAME
+            XAVIER 'X-MAN' EDER
           </h1>
           <p className="text-sm md:text-base tracking-[0.6em] text-blue-200/80 uppercase">
             Creative | Technologist | Developer
