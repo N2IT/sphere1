@@ -76,11 +76,21 @@ export function Spacecraft({
         })}
         {/* Central hub - cone shaped with thrusters */}
         <group rotation={[Math.PI, 0, 0]}>
-          {/* Main cone body */}
-          <mesh>
-            <coneGeometry args={[size * 2, size * 7, 16, 1, false, size * 1]} /> {/* [radius, height, segments, heightSegments, openEnded, thetaStart] */}
+          {/* Top section (cockpit) */}
+          <mesh position={[0, size * 2, 0]}>
+            <cylinderGeometry args={[size * .3, size * 2.5, size * 3, 32]} /> {/* [topRadius, bottomRadius, height, segments] */}
             <meshStandardMaterial 
-              color="#444444"
+              color="#fefefe"
+              metalness={0.9}
+              roughness={0.2}
+            />
+          </mesh>
+
+          {/* Bottom section (main body) */}
+          <mesh position={[0, -size * 1, 0]}>
+            <cylinderGeometry args={[size * 2.5, size * 2, size * 4, 32]} /> {/* [topRadius, bottomRadius, height, segments] */}
+            <meshStandardMaterial 
+              color="#fefefe"
               metalness={0.9}
               roughness={0.2}
             />
