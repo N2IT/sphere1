@@ -86,11 +86,81 @@ export function Spacecraft({
             />
           </mesh>
 
+          {/* Cockpit Windows */}
+          {/* Front window */}
+          <mesh 
+            position={[
+              Math.cos(0) * size * .9025,
+              size * 2.65,
+              Math.sin(0) * size * .9025
+            ]}
+            rotation={[
+              Math.PI / 1,
+              0,
+              1
+            ]}
+          >
+            <boxGeometry args={[size * .3, size * 0.1, size * 0.6]} />
+            <meshStandardMaterial 
+              color="#88ccff"
+              metalness={0.9}
+              roughness={0.1}
+              emissive="#447799"
+              emissiveIntensity={0.5}
+            />
+          </mesh>
+
+          {/* Back window */}
+          <mesh 
+            position={[
+              Math.cos(Math.PI) * size * .9025,
+              size * 2.65,
+              Math.sin(Math.PI) * size * .9025
+            ]}
+            rotation={[
+              Math.PI / 1,
+              -Math.PI,
+              1 + Math.PI
+            ]}
+          >
+            <boxGeometry args={[size * 0.3, size * 0.1, size * 0.6]} />
+            <meshStandardMaterial 
+              color="#88ccff"
+              metalness={0.9}
+              roughness={0.1}
+              emissive="#447799"
+              emissiveIntensity={0.5}
+            />
+          </mesh>
+
+          {/* Let's add a third window to test - 45 degrees from front */}
+          <mesh 
+            position={[
+              Math.cos(Math.PI / 4) * size * .9025,
+              size * 2.65,
+              Math.sin(Math.PI / 4) * size * .9025
+            ]}
+            rotation={[
+              Math.PI / .5,
+              -Math.PI / 4,
+              1 + Math.PI / 2.5
+            ]}
+          >
+            <boxGeometry args={[size * 0.3, size * 0.1, size * 0.6]} />
+            <meshStandardMaterial 
+              color="#88ccff"
+              metalness={0.9}
+              roughness={0.1}
+              emissive="#447799"
+              emissiveIntensity={0.5}
+            />
+          </mesh>
+
           {/* Bottom section (main body) */}
           <mesh position={[0, -size * 1, 0]}>
             <cylinderGeometry args={[size * 2.5, size * 2, size * 4, 32]} /> {/* [topRadius, bottomRadius, height, segments] */}
             <meshStandardMaterial 
-              color="#fefefe"
+              color="#666666"
               metalness={0.9}
               roughness={0.2}
             />
