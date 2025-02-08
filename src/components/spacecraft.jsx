@@ -11,13 +11,13 @@ export function Spacecraft({
   const ringRef = useRef()
   const timeRef = useRef(0)
 
-  // Only rotation animation, no orbital movement
+  // Wheel-like rotation animation
   useFrame((state, delta) => {
     timeRef.current += delta
     
     if (ringRef.current) {
-      // Only maintain ring rotation for styling
-      ringRef.current.rotation.z += rotationSpeed * delta
+      // Rotate around the Y axis for wheel-like motion when viewed from front
+      ringRef.current.rotation.y -= rotationSpeed * delta
     }
   })
 
@@ -55,7 +55,8 @@ export function Spacecraft({
   )
 
   return (
-    <group ref={groupRef} position={position} rotation={[3 * Math.PI / 2, 0, 0]}>
+    <group ref={groupRef} position={position} rotation={[3 * Math.PI / 2, -Math.PI / 4, 0]}>
+      {/* Ring of segments that will rotate */}
       <group ref={ringRef}>
         {/* Create ring of segments */}
         {Array.from({ length: 12 }).map((_, i) => {
@@ -73,16 +74,16 @@ export function Spacecraft({
             />
           )
         })}
+        {/* Central hub - moved inside ringRef to rotate with segments */}
+        <mesh>
+          <cylinderGeometry args={[size * 2, size * 2, size, 16]} />
+          <meshStandardMaterial 
+            color="#333333"
+            metalness={0.9}
+            roughness={0.1}
+          />
+        </mesh>
       </group>
-      {/* Central hub */}
-      <mesh>
-        <cylinderGeometry args={[size * 2, size * 2, size, 16]} />
-        <meshStandardMaterial 
-          color="#333333"
-          metalness={0.9}
-          roughness={0.1}
-        />
-      </mesh>
     </group>
   )
 } 

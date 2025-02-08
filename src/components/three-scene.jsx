@@ -10,8 +10,8 @@ export function ThreeScene() {
     <div className="w-full h-full bg-black">
       <Canvas 
         camera={{ 
-          position: [0, 0, 3],  // Moved camera closer for better view
-          fov: 50,              // Reset FOV to normal value
+          position: [3, 0, 3],  // Changed from [0, 0, 3] to view from 45 degrees
+          fov: 50,
           near: 0.1,
           far: 1000
         }}
@@ -35,8 +35,8 @@ export function ThreeScene() {
         {/* Centered Spacecraft */}
         <Spacecraft 
           size={0.2}
-          rotationSpeed={0.0}
-          position={[0, 0, 0]}  // Explicitly set center position
+          rotationSpeed={0.09}     // Increased speed for more visible wheel rotation
+          position={[0, 0, 0]}
         />
 
         {/* Environment for reflections */}
