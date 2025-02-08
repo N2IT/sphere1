@@ -37,7 +37,7 @@ export function Spacecraft({
       <mesh position={[0, size * 0.8, 0]}>
         <boxGeometry args={[size * 4, size * 0.1, size * 1.5]} />
         <meshStandardMaterial 
-          color="#4488FF"
+          color="#666666"
           metalness={0.9}
           roughness={0.1}
         />
@@ -74,15 +74,51 @@ export function Spacecraft({
             />
           )
         })}
-        {/* Central hub - moved inside ringRef to rotate with segments */}
-        <mesh>
-          <cylinderGeometry args={[size * 2, size * 2, size, 16]} />
-          <meshStandardMaterial 
-            color="#333333"
-            metalness={0.9}
-            roughness={0.1}
-          />
-        </mesh>
+        {/* Central hub - cone shaped with thrusters */}
+        <group rotation={[Math.PI, 0, 0]}>
+          {/* Main cone body */}
+          <mesh>
+            <coneGeometry args={[size * 2, size * 7, 16, 1, false, size * 1]} /> {/* [radius, height, segments, heightSegments, openEnded, thetaStart] */}
+            <meshStandardMaterial 
+              color="#444444"
+              metalness={0.9}
+              roughness={0.2}
+            />
+          </mesh>
+          
+          {/* Thruster ring */}
+          <mesh position={[0, -size * 3.5, 0]} rotation={[Math.PI / 2, 0, 0]}>
+            <torusGeometry args={[size * 1.8, size * 0.3, 16, 32]} /> {/* [radius, tube, radialSegments, tubularSegments] */}
+            <meshStandardMaterial 
+              color="#666666"
+              metalness={0.8}
+              roughness={0.3}
+            />
+          </mesh>
+
+          {/* Thruster nozzles */}
+          {Array.from({ length: 4 }).map((_, i) => {
+            const angle = (i / 4) * Math.PI * 2
+            return (
+              <mesh 
+                key={i}
+                position={[
+                  Math.cos(angle) * size * 1.5,
+                  -size * 3.5,
+                  Math.sin(angle) * size * 1.5
+                ]}
+                rotation={[0, 0, 0]}
+              >
+                <cylinderGeometry args={[size * 0.4, size * 0.6, size * 0.8, 8]} />
+                <meshStandardMaterial 
+                  color="#333333"
+                  metalness={0.9}
+                  roughness={0.1}
+                />
+              </mesh>
+            )
+          })}
+        </group>
       </group>
     </group>
   )
