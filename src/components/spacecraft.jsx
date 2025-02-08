@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
+import { RoundedBox } from '@react-three/drei'
 import * as THREE from 'three'
 
 export function Spacecraft({ 
@@ -88,7 +89,7 @@ export function Spacecraft({
 
           {/* Cockpit Windows */}
           {/* Front window */}
-          <mesh 
+          <RoundedBox 
             position={[
               Math.cos(0) * size * .9025,
               size * 2.65,
@@ -97,10 +98,12 @@ export function Spacecraft({
             rotation={[
               Math.PI / 1,
               0,
-              1
+              .95
             ]}
+            args={[size * .9, size * 0.1, size * .6]}
+            radius={0.005}
+            smoothness={4}
           >
-            <boxGeometry args={[size * .3, size * 0.1, size * 0.6]} />
             <meshStandardMaterial 
               color="#88ccff"
               metalness={0.9}
@@ -108,10 +111,10 @@ export function Spacecraft({
               emissive="#447799"
               emissiveIntensity={0.5}
             />
-          </mesh>
+          </RoundedBox>
 
           {/* Back window */}
-          <mesh 
+          <RoundedBox 
             position={[
               Math.cos(Math.PI) * size * .9025,
               size * 2.65,
@@ -120,10 +123,12 @@ export function Spacecraft({
             rotation={[
               Math.PI / 1,
               -Math.PI,
-              1 + Math.PI
+              .95 + Math.PI
             ]}
+            args={[size * .9, size * 0.1, size * 0.6]}
+            radius={0.005}
+            smoothness={4}
           >
-            <boxGeometry args={[size * 0.3, size * 0.1, size * 0.6]} />
             <meshStandardMaterial 
               color="#88ccff"
               metalness={0.9}
@@ -131,10 +136,10 @@ export function Spacecraft({
               emissive="#447799"
               emissiveIntensity={0.5}
             />
-          </mesh>
+          </RoundedBox>
 
-          {/* Let's add a third window to test - 45 degrees from front */}
-          <mesh 
+          {/* Third window - 45 degrees */}
+          <RoundedBox 
             position={[
               Math.cos(Math.PI / 4) * size * .9025,
               size * 2.65,
@@ -143,10 +148,12 @@ export function Spacecraft({
             rotation={[
               Math.PI / .5,
               -Math.PI / 4,
-              1 + Math.PI / 2.5
+              .95 + Math.PI / 2.5
             ]}
+            args={[size * .9, size * 0.1, size * 0.6]}
+            radius={0.005}
+            smoothness={4}
           >
-            <boxGeometry args={[size * 0.3, size * 0.1, size * 0.6]} />
             <meshStandardMaterial 
               color="#88ccff"
               metalness={0.9}
@@ -154,7 +161,57 @@ export function Spacecraft({
               emissive="#447799"
               emissiveIntensity={0.5}
             />
-          </mesh>
+          </RoundedBox>
+
+          {/* Fourth window - 90 degrees */}
+          <RoundedBox 
+            position={[
+              Math.cos(Math.PI / 2) * size * .9025,
+              size * 2.65,
+              Math.sin(Math.PI / 2) * size * .9025
+            ]}
+            rotation={[
+              Math.PI / .5,
+              -Math.PI / 2,
+              .95 + Math.PI / 2.5
+            ]}
+            args={[size * .9, size * 0.1, size * 0.6]}
+            radius={0.005}
+            smoothness={4}
+          >
+            <meshStandardMaterial 
+              color="#88ccff"
+              metalness={0.9}
+              roughness={0.1}
+              emissive="#447799"
+              emissiveIntensity={0.5}
+            />
+          </RoundedBox>
+
+          {/* Fifth window - 135 degrees */}
+          <RoundedBox 
+            position={[
+              Math.cos(3 * Math.PI / 4) * size * .9025,
+              size * 2.65,
+              Math.sin(3 * Math.PI / 4) * size * .9025
+            ]}
+            rotation={[
+              Math.PI / .5,
+              -3 * Math.PI / 4,
+              .95 + Math.PI / 2.5
+            ]}
+            args={[size * .9, size * 0.1, size * 0.6]}
+            radius={0.005}
+            smoothness={4}
+          >
+            <meshStandardMaterial 
+              color="#88ccff"
+              metalness={0.9}
+              roughness={0.1}
+              emissive="#447799"
+              emissiveIntensity={0.5}
+            />
+          </RoundedBox>
 
           {/* Bottom section (main body) */}
           <mesh position={[0, -size * 1, 0]}>
