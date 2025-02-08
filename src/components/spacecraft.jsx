@@ -104,16 +104,16 @@ export function Spacecraft({
           {/* Front window */}
           <RoundedBox 
             position={[
-              Math.cos(0) * size * 1.2,
-              size * 2.35,
-              Math.sin(0) * size * 1.2
+              Math.cos(0) * size * 0.9025,
+              size * 2.45,
+              Math.sin(0) * size * 0.9025
             ]}
             rotation={[
-              Math.PI / 1,
+              Math.PI / 1.1,
               0,
-              .95
+              1 + Math.PI / 2.5
             ]}
-            args={[size * .9, size * 0.1, size * .6]}
+            args={[size * .9, size * 0.1, size * 0.8]}
             radius={0.005}
             smoothness={4}
           >
@@ -129,16 +129,16 @@ export function Spacecraft({
           {/* Back window */}
           <RoundedBox 
             position={[
-              Math.cos(Math.PI) * size * 1.2,
-              size * 2.35,
-              Math.sin(Math.PI) * size * 1.2
+              Math.cos(Math.PI) * size * 0.9025,
+              size * 2.45,
+              Math.sin(Math.PI) * size * 0.9025
             ]}
             rotation={[
-              Math.PI / 1,
+              Math.PI / 1.1,
               -Math.PI,
-              .95 + Math.PI
+              1 + Math.PI / 2.5
             ]}
-            args={[size * .9, size * 0.1, size * 0.6]}
+            args={[size * .9, size * 0.1, size * 0.8]}
             radius={0.005}
             smoothness={4}
           >
@@ -154,16 +154,16 @@ export function Spacecraft({
           {/* Third window - 45 degrees */}
           <RoundedBox 
             position={[
-              Math.cos(Math.PI / 4) * size * 1.2,
-              size * 2.35,
-              Math.sin(Math.PI / 4) * size * 1.2
+              Math.cos(Math.PI / 4) * size * 0.9025,
+              size * 2.45,
+              Math.sin(Math.PI / 4) * size * 0.9025
             ]}
             rotation={[
-              Math.PI / .5,
+              Math.PI / 1.1,
               -Math.PI / 4,
-              .95 + Math.PI / 2.5
+              1 + Math.PI / 2.5
             ]}
-            args={[size * .9, size * 0.1, size * 0.6]}
+            args={[size * .9, size * 0.1, size * 0.8]}
             radius={0.005}
             smoothness={4}
           >
@@ -179,16 +179,16 @@ export function Spacecraft({
           {/* Fourth window - 90 degrees */}
           <RoundedBox 
             position={[
-              Math.cos(Math.PI / 2) * size * 1.2,
-              size * 2.35,
-              Math.sin(Math.PI / 2) * size * 1.2
+              Math.cos(Math.PI / 2) * size * 0.9025,
+              size * 2.45,
+              Math.sin(Math.PI / 2) * size * 0.9025
             ]}
             rotation={[
-              Math.PI / .5,
+              Math.PI / 1.1,
               -Math.PI / 2,
-              .95 + Math.PI / 2.5
+              1 + Math.PI / 2.5
             ]}
-            args={[size * .9, size * 0.1, size * 0.6]}
+            args={[size * .9, size * 0.1, size * 0.8]}
             radius={0.005}
             smoothness={4}
           >
@@ -204,16 +204,16 @@ export function Spacecraft({
           {/* Fifth window - 135 degrees */}
           <RoundedBox 
             position={[
-              Math.cos(3 * Math.PI / 4) * size * 1.2,
-              size * 2.35,
-              Math.sin(3 * Math.PI / 4) * size * 1.2
+              Math.cos(3 * Math.PI / 4) * size * 0.9025,
+              size * 2.45,
+              Math.sin(3 * Math.PI / 4) * size * 0.9025
             ]}
             rotation={[
-              Math.PI / .5,
+              Math.PI / 1.1,
               -3 * Math.PI / 4,
-              .95 + Math.PI / 2.5
+              1 + Math.PI / 2.5
             ]}
-            args={[size * .9, size * 0.1, size * 0.6]}
+            args={[size * .9, size * 0.1, size * 0.8]}
             radius={0.005}
             smoothness={4}
           >
@@ -229,16 +229,16 @@ export function Spacecraft({
           {/* Sixth window - 225 degrees */}
           <RoundedBox 
             position={[
-              Math.cos(5 * Math.PI / 4) * size * 1.2,
-              size * 2.35,
-              Math.sin(5 * Math.PI / 4) * size * 1.2
+              Math.cos(5 * Math.PI / 4) * size * 0.9025,
+              size * 2.45,
+              Math.sin(5 * Math.PI / 4) * size * 0.9025
             ]}
             rotation={[
-              Math.PI / .5,
+              Math.PI / 1.1,
               -5 * Math.PI / 4,
-              .95 + Math.PI / 2.5
+              1 + Math.PI / 2.5
             ]}
-            args={[size * .9, size * 0.1, size * 0.6]}
+            args={[size * .9, size * 0.1, size * 0.8]}
             radius={0.005}
             smoothness={4}
           >
@@ -254,16 +254,16 @@ export function Spacecraft({
           {/* Seventh window - 270 degrees */}
           <RoundedBox 
             position={[
-              Math.cos(3 * Math.PI / 2) * size * 1.2,
-              size * 2.35,
-              Math.sin(3 * Math.PI / 2) * size * 1.2
+              Math.cos(3 * Math.PI / 2) * size * 0.9025,
+              size * 2.45,
+              Math.sin(3 * Math.PI / 2) * size * 0.9025
             ]}
             rotation={[
-              Math.PI / .5,
+              Math.PI / 1.1,
               -3 * Math.PI / 2,
-              .95 + Math.PI / 2.5
+              1 + Math.PI / 2.5
             ]}
-            args={[size * .9, size * 0.1, size * 0.6]}
+            args={[size * .9, size * 0.1, size * 0.8]}
             radius={0.005}
             smoothness={4}
           >
@@ -279,16 +279,16 @@ export function Spacecraft({
           {/* Eighth window - 315 degrees */}
           <RoundedBox 
             position={[
-              Math.cos(7 * Math.PI / 4) * size * 1.2,
-              size * 2.35,
-              Math.sin(7 * Math.PI / 4) * size * 1.2
+              Math.cos(7 * Math.PI / 4) * size * 0.9025,
+              size * 2.45,
+              Math.sin(7 * Math.PI / 4) * size * 0.9025
             ]}
             rotation={[
-              Math.PI / .5,
+              Math.PI / 1.1,
               -7 * Math.PI / 4,
-              .95 + Math.PI / 2.5
+              1 + Math.PI / 2.5
             ]}
-            args={[size * .9, size * 0.1, size * 0.6]}
+            args={[size * .9, size * 0.1, size * 0.8]}
             radius={0.005}
             smoothness={4}
           >
