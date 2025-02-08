@@ -6,19 +6,32 @@ import * as THREE from 'three'
 export function Spacecraft({ 
   size = 0.05,
   rotationSpeed = 0.2,
-  position = [0, 0, 0]
+  position = [0, 0, 0],
+  orbitRadius = 4,
+  orbitSpeed = 0.2
 }) {
   const groupRef = useRef()
   const ringRef = useRef()
   const timeRef = useRef(0)
 
-  // Wheel-like rotation animation
+  // Orbit and rotation animation
   useFrame((state, delta) => {
     timeRef.current += delta
     
     if (ringRef.current) {
-      // Rotate around the Y axis for wheel-like motion when viewed from front
+      // Rotate ring around its axis
       ringRef.current.rotation.y -= rotationSpeed * delta
+    }
+
+    if (groupRef.current) {
+      // Calculate orbit position
+      const angle = timeRef.current * orbitSpeed
+      groupRef.current.position.x = Math.cos(angle) * orbitRadius
+      groupRef.current.position.z = Math.sin(angle) * orbitRadius
+      
+      // Point nose in direction of travel while maintaining vertical orientation
+      groupRef.current.rotation.x = 3 * Math.PI / 2  // Keep spacecraft upright
+      groupRef.current.rotation.y = angle - Math.PI / 2  // Point in direction of travel
     }
   })
 
@@ -56,7 +69,7 @@ export function Spacecraft({
   )
 
   return (
-    <group ref={groupRef} position={position} rotation={[3 * Math.PI / 2, -Math.PI / 4, 0]}>
+    <group ref={groupRef} position={position} rotation={[3 * Math.PI / 2, 0, 0]}>
       {/* Ring of segments that will rotate */}
       <group ref={ringRef}>
         {/* Create ring of segments */}

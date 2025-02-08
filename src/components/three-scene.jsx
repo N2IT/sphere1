@@ -4,13 +4,14 @@ import { useRef } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { Environment, OrbitControls } from '@react-three/drei'
 import { Spacecraft } from './spacecraft'
+import { IceSphere } from './ice-sphere'
 
 export function ThreeScene() {
   return (
     <div className="w-full h-full bg-black">
       <Canvas 
         camera={{ 
-          position: [3, 0, 3],  // Changed from [0, 0, 3] to view from 45 degrees
+          position: [3, 2, 5],  // Adjusted for better view of orbit
           fov: 50,
           near: 0.1,
           far: 1000
@@ -20,8 +21,8 @@ export function ThreeScene() {
         <OrbitControls 
           enableZoom={true} 
           enablePan={false}
-          minDistance={2}
-          maxDistance={10}
+          minDistance={4}
+          maxDistance={20}
         />
         
         {/* Basic lighting */}
@@ -32,11 +33,19 @@ export function ThreeScene() {
           color="#ffffff"
         />
         
-        {/* Centered Spacecraft */}
-        <Spacecraft 
-          size={0.2}
-          rotationSpeed={0.09}     // Increased speed for more visible wheel rotation
+        {/* Ice Sphere */}
+        <IceSphere 
+          radius={1.5}
           position={[0, 0, 0]}
+        />
+
+        {/* Orbiting Spacecraft */}
+        <Spacecraft 
+          size={0.0049}
+          rotationSpeed={0.1}  // Increased for more visible rotation
+          position={[0, 0, 0]}
+          orbitRadius={3}
+          orbitSpeed={0.02}  // Slightly increased orbit speed
         />
 
         {/* Environment for reflections */}
