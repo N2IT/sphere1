@@ -11,7 +11,7 @@ export function ThreeScene() {
     <div className="w-full h-full bg-black">
       <Canvas 
         camera={{ 
-          position: [3, 2, 5],  // Adjusted for better view of orbit
+          position: [8, 0, 8],  // Adjusted for level view of orbital plane
           fov: 50,
           near: 0.1,
           far: 1000
@@ -35,7 +35,7 @@ export function ThreeScene() {
         
         {/* Ice Sphere */}
         <IceSphere 
-          radius={1.5}
+          radius={4}
           position={[0, 0, 0]}
         />
 
@@ -44,8 +44,8 @@ export function ThreeScene() {
           size={0.0049}
           rotationSpeed={0.1}  // Increased for more visible rotation
           position={[0, 0, 0]}
-          orbitRadius={3}
-          orbitSpeed={0.02}  // Slightly increased orbit speed
+          orbitRadius={9}
+          orbitSpeed={0.05}  // Slightly increased orbit speed
         />
 
         {/* Environment for reflections */}
