@@ -1,63 +1,109 @@
 'use client'
 
-import { useRef } from 'react'
+import { useRef, useState, Suspense } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { Environment, OrbitControls } from '@react-three/drei'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Spacecraft } from './spacecraft'
 import { IceSphere } from './ice-sphere'
+import { Navigation } from './navigation'
+
+// Loading component with fade transition
+function Loader() {
+  return (
+    <div className="absolute inset-0 flex items-center justify-center bg-black">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="text-blue-200/60"
+      >
+        Loading...
+      </motion.div>
+    </div>
+  )
+}
 
 export function ThreeScene() {
+  const [isLoading, setIsLoading] = useState(true)
+  const [isSceneReady, setIsSceneReady] = useState(false)
+
+  const handleSceneCreated = () => {
+    // Short delay to ensure smooth transition
+    setTimeout(() => {
+      setIsLoading(false)
+    }, 1000)
+  }
+
   return (
     <div className="w-full h-full bg-black">
-      <Canvas 
-        camera={{ 
-          position: [8, 0, 8],  // Adjusted for level view of orbital plane
-          fov: 50,
-          near: 0.1,
-          far: 1000
-        }}
+      <AnimatePresence>
+        {isLoading && <Loader />}
+      </AnimatePresence>
+
+      <motion.div
+        className="w-full h-full"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1, delay: 0.5 }}
       >
-        {/* Scene Controls */}
-        <OrbitControls 
-          enableZoom={true} 
-          enablePan={false}
-          minDistance={4}
-          maxDistance={20}
-          autoRotate={true}
-          autoRotateSpeed={0.1}
-        />
-        
-        {/* Enhanced lighting for better surface detail */}
-        <ambientLight intensity={0.2} />
-        <directionalLight 
-          position={[10, 5, 5]} 
-          intensity={0.8}
-          color="#ffffff"
-        />
-        
-        {/* Holographic Ice Sphere */}
-        <IceSphere 
-          radius={4}
-          position={[0, 0, 0]}
-          rotationSpeed={0.001}
-        />
+        <Canvas 
+          camera={{ 
+            position: [8, 0, 8],
+            fov: 50,
+            near: 0.1,
+            far: 1000
+          }}
+          onCreated={handleSceneCreated}
+        >
+          <Suspense fallback={null}>
+            {/* Scene Controls */}
+            <OrbitControls 
+              enableZoom={true} 
+              enablePan={false}
+              minDistance={4}
+              maxDistance={20}
+              autoRotate={true}
+              autoRotateSpeed={0.1}
+            />
+            
+            {/* Enhanced lighting for better surface detail */}
+            <ambientLight intensity={0.2} />
+            <directionalLight 
+              position={[10, 5, 5]} 
+              intensity={0.8}
+              color="#ffffff"
+            />
+            
+            {/* Holographic Ice Sphere */}
+            <IceSphere 
+              radius={4}
+              position={[0, 0, 0]}
+              rotationSpeed={0.001}
+              isReady={!isLoading}
+            />
 
-        {/* Orbiting Spacecraft */}
-        <Spacecraft 
-          size={0.009}
-          rotationSpeed={0.1}
-          position={[0, 0, 0]}
-          orbitRadius={9}
-          orbitSpeed={0.03}
-        />
+            {/* Orbiting Spacecraft */}
+            <Spacecraft 
+              size={0.009}
+              rotationSpeed={0.1}
+              position={[0, 0, 0]}
+              orbitRadius={9}
+              orbitSpeed={0.03}
+            />
 
-        {/* Environment for reflections */}
-        <Environment 
-          preset="night"
-          background={false}
-          intensity={0.2}
-        />
-      </Canvas>
+            {/* Environment for reflections */}
+            <Environment 
+              preset="night"
+              background={false}
+              intensity={0.2}
+            />
+          </Suspense>
+        </Canvas>
+      </motion.div>
+      
+      {/* Navigation overlay */}
+      <Navigation />
     </div>
   )
 }

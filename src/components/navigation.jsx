@@ -4,17 +4,16 @@ import { motion } from 'framer-motion'
 import { Link } from '@nextui-org/react'
 
 const navItems = [
-  { name: 'WORK', href: '/work' },
-  { name: 'PROTOTYPES', href: '/prototypes' },
-  { name: 'ART', href: '/art' },
-  { name: 'PRESS', href: '/press' },
-  { name: 'INFO', href: '/info' },
-  { name: 'REEL', href: '/reel' },
+  { name: 'ABOUT', href: '/about' },
+  { name: 'EXPERIENCE', href: '/experience' },
+  { name: 'PROJECTS', href: '/projects' },
+  { name: 'BLOG', href: '/blog' },
+  { name: 'CONTACT', href: '/contact' },
 ]
 
 export function Navigation() {
   return (
-    <nav className="flex justify-center items-center gap-8 md:gap-16">
+    <nav className="fixed top-8 left-0 right-0 z-50 flex justify-center items-center gap-8 md:gap-16">
       {navItems.map((item, index) => (
         <Link 
           key={item.name} 

@@ -129,20 +129,34 @@ const fragmentShader = `
 export function IceSphere({ 
   radius = 4,
   position = [0, 0, 0],
-  rotationSpeed = 0.001
+  rotationSpeed = 0.001,
+  isReady = false
 }) {
   const meshRef = useRef()
   const materialRef = useRef()
   const timeRef = useRef(0)
 
-  // Create shader material
+  // Create shader material with fade-in uniforms
   const shaderMaterial = new THREE.ShaderMaterial({
     uniforms: {
       time: { value: 0 },
-      resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
+      resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+      opacity: { value: 0 }, // Start fully transparent
+      transitionProgress: { value: 0 } // For smooth material transition
     },
     vertexShader,
-    fragmentShader,
+    fragmentShader: `
+      ${fragmentShader.split('void main()')[0]}
+      uniform float opacity;
+      uniform float transitionProgress;
+      
+      void main() {
+        ${fragmentShader.split('void main()')[1].replace(
+          'gl_FragColor = vec4(finalColor, alpha);',
+          'gl_FragColor = vec4(finalColor, alpha * opacity);'
+        )}
+      }
+    `,
     transparent: true,
   })
 
@@ -152,6 +166,12 @@ export function IceSphere({
     if (meshRef.current) {
       meshRef.current.rotation.y += rotationSpeed
       meshRef.current.material.uniforms.time.value += delta
+
+      // Smooth transition when ready
+      if (isReady) {
+        meshRef.current.material.uniforms.opacity.value += (1 - meshRef.current.material.uniforms.opacity.value) * 0.05
+        meshRef.current.material.uniforms.transitionProgress.value += (1 - meshRef.current.material.uniforms.transitionProgress.value) * 0.03
+      }
     }
   })
 
