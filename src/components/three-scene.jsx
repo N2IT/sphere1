@@ -1,12 +1,11 @@
 'use client'
 
-import { useRef, useState, Suspense } from 'react'
-import { Canvas } from '@react-three/fiber'
+import { useRef, useState, Suspense, useEffect } from 'react'
+import { Canvas, useThree, useFrame } from '@react-three/fiber'
 import { Environment, OrbitControls } from '@react-three/drei'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Spacecraft } from './spacecraft'
 import { IceSphere } from './ice-sphere'
-import { Navigation } from './navigation'
 
 // Loading component with fade transition
 function Loader() {
@@ -24,7 +23,28 @@ function Loader() {
   )
 }
 
-export function ThreeScene() {
+// Camera controller component
+function CameraController({ isZoomedOut }) {
+  const { camera } = useThree()
+  const initialPosition = [8, 0, 8]
+  const zoomedOutPosition = [16, 0, 16]
+
+  useFrame(() => {
+    if (isZoomedOut) {
+      camera.position.x += (zoomedOutPosition[0] - camera.position.x) * 0.02
+      camera.position.y += (zoomedOutPosition[1] - camera.position.y) * 0.02
+      camera.position.z += (zoomedOutPosition[2] - camera.position.z) * 0.02
+    } else {
+      camera.position.x += (initialPosition[0] - camera.position.x) * 0.02
+      camera.position.y += (initialPosition[1] - camera.position.y) * 0.02
+      camera.position.z += (initialPosition[2] - camera.position.z) * 0.02
+    }
+  })
+
+  return null
+}
+
+export function ThreeScene({ isZoomedOut = false }) {
   const [isLoading, setIsLoading] = useState(true)
   const [isSceneReady, setIsSceneReady] = useState(false)
 
@@ -57,6 +77,8 @@ export function ThreeScene() {
           onCreated={handleSceneCreated}
         >
           <Suspense fallback={null}>
+            <CameraController isZoomedOut={isZoomedOut} />
+            
             {/* Scene Controls */}
             <OrbitControls 
               enableZoom={true} 
@@ -101,9 +123,6 @@ export function ThreeScene() {
           </Suspense>
         </Canvas>
       </motion.div>
-      
-      {/* Navigation overlay */}
-      <Navigation />
     </div>
   )
 }
