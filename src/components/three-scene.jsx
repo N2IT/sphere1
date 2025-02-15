@@ -26,19 +26,71 @@ function Loader() {
 // Camera controller component
 function CameraController({ isZoomedOut }) {
   const { camera } = useThree()
+  const [animationPhase, setAnimationPhase] = useState(0) // 0: initial, 1: zoomed out, 2: top-right
   const initialPosition = [8, 0, 8]
   const zoomedOutPosition = [16, 0, 16]
+  const finalPosition = [30, 15, 30]
+
+  // Track animation progress
+  const animationProgress = useRef(0)
+  const lastTime = useRef(Date.now())
 
   useFrame(() => {
-    if (isZoomedOut) {
-      camera.position.x += (zoomedOutPosition[0] - camera.position.x) * 0.02
-      camera.position.y += (zoomedOutPosition[1] - camera.position.y) * 0.02
-      camera.position.z += (zoomedOutPosition[2] - camera.position.z) * 0.02
-    } else {
+    const currentTime = Date.now()
+    const deltaTime = (currentTime - lastTime.current) / 1000 // Convert to seconds
+    lastTime.current = currentTime
+
+    if (!isZoomedOut) {
+      // Reset animation when returning
+      animationProgress.current = 0
+      setAnimationPhase(0)
+      
+      // Return to initial position
       camera.position.x += (initialPosition[0] - camera.position.x) * 0.02
       camera.position.y += (initialPosition[1] - camera.position.y) * 0.02
       camera.position.z += (initialPosition[2] - camera.position.z) * 0.02
+      return
     }
+
+    // Increment animation progress
+    if (animationPhase === 0) {
+      animationProgress.current += deltaTime * 0.5 // Control speed of first phase
+      if (animationProgress.current >= 1) {
+        setAnimationPhase(1)
+        animationProgress.current = 0
+      }
+    } else if (animationPhase === 1) {
+      animationProgress.current += deltaTime * 0.5 // Control speed of second phase
+    }
+
+    // Clamp animation progress
+    animationProgress.current = Math.min(animationProgress.current, 1)
+
+    // Calculate target position based on animation phase
+    let targetPosition
+    if (animationPhase === 0) {
+      // First phase: Initial position to zoomed out
+      targetPosition = {
+        x: initialPosition[0] + (zoomedOutPosition[0] - initialPosition[0]) * animationProgress.current,
+        y: initialPosition[1] + (zoomedOutPosition[1] - initialPosition[1]) * animationProgress.current,
+        z: initialPosition[2] + (zoomedOutPosition[2] - initialPosition[2]) * animationProgress.current
+      }
+    } else {
+      // Second phase: Zoomed out to final position
+      targetPosition = {
+        x: zoomedOutPosition[0] + (finalPosition[0] - zoomedOutPosition[0]) * animationProgress.current,
+        y: zoomedOutPosition[1] + (finalPosition[1] - zoomedOutPosition[1]) * animationProgress.current,
+        z: zoomedOutPosition[2] + (finalPosition[2] - zoomedOutPosition[2]) * animationProgress.current
+      }
+    }
+
+    // Update camera position with easing
+    camera.position.x += (targetPosition.x - camera.position.x) * 0.05
+    camera.position.y += (targetPosition.y - camera.position.y) * 0.05
+    camera.position.z += (targetPosition.z - camera.position.z) * 0.05
+
+    // Always ensure camera is looking at the center
+    camera.lookAt(0, 0, 0)
   })
 
   return null
@@ -81,11 +133,12 @@ export function ThreeScene({ isZoomedOut = false }) {
             
             {/* Scene Controls */}
             <OrbitControls 
-              enableZoom={true} 
+              enableZoom={false} 
               enablePan={false}
+              enableRotate={!isZoomedOut}
               minDistance={4}
               maxDistance={20}
-              autoRotate={true}
+              autoRotate={!isZoomedOut}
               autoRotateSpeed={0.1}
             />
             
