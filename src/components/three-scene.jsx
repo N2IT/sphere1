@@ -59,13 +59,13 @@ function CameraController({ isZoomedOut }) {
 
     // Increment animation progress
     if (animationPhase === 0) {
-      animationProgress.current += deltaTime * 0.3 // Slower first phase
+      animationProgress.current += deltaTime * 0.027 // Slower first phase
       if (animationProgress.current >= 1) {
         setAnimationPhase(1)
         animationProgress.current = 0
       }
     } else if (animationPhase === 1) {
-      animationProgress.current += deltaTime * 0.3 // Slower second phase
+      animationProgress.current += deltaTime * 0.027 // Slower second phase
     }
 
     // Clamp animation progress
