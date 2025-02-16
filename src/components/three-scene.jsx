@@ -6,6 +6,7 @@ import { Environment, OrbitControls } from '@react-three/drei'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Spacecraft } from './spacecraft'
 import { IceSphere } from './ice-sphere'
+import * as THREE from 'three'
 
 // Loading component with fade transition
 function Loader() {
@@ -26,83 +27,62 @@ function Loader() {
 // Camera controller component
 function CameraController({ isZoomedOut }) {
   const { camera } = useThree()
-  const [animationPhase, setAnimationPhase] = useState(0) // 0: initial, 1: zoomed out, 2: top-right
+  const animationProgress = useRef(0)
+  const lastTime = useRef(Date.now())
+  
   const initialPosition = [8, 0, 8]
   const zoomedOutPosition = [16, 0, 16]
   const finalPosition = [25, 10, 25]
-  
-  // Define lookAt targets for each phase
   const initialTarget = [0, 0, 0]
-  const finalTarget = [-45, -15, 0] // Inverted values to move scene to top-right
+  const finalTarget = [-45, -15, 0]
 
-  // Track animation progress
-  const animationProgress = useRef(0)
-  const lastTime = useRef(Date.now())
+  // Set initial camera position and lookAt
+  useEffect(() => {
+    camera.position.set(...initialPosition)
+    camera.lookAt(...initialTarget)
+  }, [])
 
   useFrame(() => {
     const currentTime = Date.now()
     const deltaTime = (currentTime - lastTime.current) / 1000
     lastTime.current = currentTime
 
-    if (!isZoomedOut) {
-      // Reset animation when returning
-      animationProgress.current = 0
-      setAnimationPhase(0)
-      
-      // Return to initial position
-      camera.position.x += (initialPosition[0] - camera.position.x) * 0.02
-      camera.position.y += (initialPosition[1] - camera.position.y) * 0.02
-      camera.position.z += (initialPosition[2] - camera.position.z) * 0.02
-      camera.lookAt(...initialTarget)
-      return
+    // Smoothly update animation progress
+    const targetProgress = isZoomedOut ? 1 : 0
+    const progressDelta = (targetProgress - animationProgress.current) * deltaTime * 0.08
+    animationProgress.current += progressDelta
+
+    // Calculate intermediate positions based on single progress value
+    const firstPhaseProgress = Math.min(1, animationProgress.current * 2) // 0 to 1 during first half
+    const secondPhaseProgress = Math.max(0, (animationProgress.current * 2) - 1) // 0 to 1 during second half
+
+    // Calculate camera position
+    const targetPosition = {
+      x: initialPosition[0] +
+         (zoomedOutPosition[0] - initialPosition[0]) * firstPhaseProgress +
+         (finalPosition[0] - zoomedOutPosition[0]) * secondPhaseProgress,
+      y: initialPosition[1] +
+         (zoomedOutPosition[1] - initialPosition[1]) * firstPhaseProgress +
+         (finalPosition[1] - zoomedOutPosition[1]) * secondPhaseProgress,
+      z: initialPosition[2] +
+         (zoomedOutPosition[2] - initialPosition[2]) * firstPhaseProgress +
+         (finalPosition[2] - zoomedOutPosition[2]) * secondPhaseProgress
     }
 
-    // Increment animation progress
-    if (animationPhase === 0) {
-      animationProgress.current += deltaTime * 0.027 // Slower first phase
-      if (animationProgress.current >= 1) {
-        setAnimationPhase(1)
-        animationProgress.current = 0
-      }
-    } else if (animationPhase === 1) {
-      animationProgress.current += deltaTime * 0.027 // Slower second phase
-    }
+    // Calculate lookAt target
+    const lookAtTarget = new THREE.Vector3(
+      initialTarget[0] + (finalTarget[0] - initialTarget[0]) * secondPhaseProgress,
+      initialTarget[1] + (finalTarget[1] - initialTarget[1]) * secondPhaseProgress,
+      initialTarget[2] + (finalTarget[2] - initialTarget[2]) * secondPhaseProgress
+    )
 
-    // Clamp animation progress
-    animationProgress.current = Math.min(animationProgress.current, 1)
-
-    // Calculate target position and lookAt based on animation phase
-    let targetPosition, currentLookAt
-    if (animationPhase === 0) {
-      // First phase: Initial position to zoomed out
-      targetPosition = {
-        x: initialPosition[0] + (zoomedOutPosition[0] - initialPosition[0]) * animationProgress.current,
-        y: initialPosition[1] + (zoomedOutPosition[1] - initialPosition[1]) * animationProgress.current,
-        z: initialPosition[2] + (zoomedOutPosition[2] - initialPosition[2]) * animationProgress.current
-      }
-      currentLookAt = initialTarget
-    } else {
-      // Second phase: Zoomed out to final position with shifted lookAt
-      targetPosition = {
-        x: zoomedOutPosition[0] + (finalPosition[0] - zoomedOutPosition[0]) * animationProgress.current,
-        y: zoomedOutPosition[1] + (finalPosition[1] - zoomedOutPosition[1]) * animationProgress.current,
-        z: zoomedOutPosition[2] + (finalPosition[2] - zoomedOutPosition[2]) * animationProgress.current
-      }
-      // Smoothly interpolate lookAt target
-      currentLookAt = [
-        initialTarget[0] + (finalTarget[0] - initialTarget[0]) * animationProgress.current,
-        initialTarget[1] + (finalTarget[1] - initialTarget[1]) * animationProgress.current,
-        initialTarget[2] + (finalTarget[2] - initialTarget[2]) * animationProgress.current
-      ]
-    }
-
-    // Update camera position with easing
-    camera.position.x += (targetPosition.x - camera.position.x) * 0.05
-    camera.position.y += (targetPosition.y - camera.position.y) * 0.05
-    camera.position.z += (targetPosition.z - camera.position.z) * 0.05
+    // Smoothly update camera position
+    camera.position.x += (targetPosition.x - camera.position.x) * 0.02
+    camera.position.y += (targetPosition.y - camera.position.y) * 0.02
+    camera.position.z += (targetPosition.z - camera.position.z) * 0.02
 
     // Update camera lookAt
-    camera.lookAt(...currentLookAt)
+    camera.lookAt(lookAtTarget)
   })
 
   return null
@@ -110,10 +90,8 @@ function CameraController({ isZoomedOut }) {
 
 export function ThreeScene({ isZoomedOut = false }) {
   const [isLoading, setIsLoading] = useState(true)
-  const [isSceneReady, setIsSceneReady] = useState(false)
 
   const handleSceneCreated = () => {
-    // Short delay to ensure smooth transition
     setTimeout(() => {
       setIsLoading(false)
     }, 1000)
@@ -129,7 +107,7 @@ export function ThreeScene({ isZoomedOut = false }) {
         className="w-full h-full"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 1, delay: 0.5 }}
+        transition={{ duration: 1 }}
       >
         <Canvas 
           camera={{ 
@@ -138,12 +116,15 @@ export function ThreeScene({ isZoomedOut = false }) {
             near: 0.1,
             far: 1000
           }}
-          onCreated={handleSceneCreated}
+          onCreated={({ gl, camera }) => {
+            camera.lookAt(0, 0, 0)
+            handleSceneCreated()
+          }}
         >
           <Suspense fallback={null}>
             <CameraController isZoomedOut={isZoomedOut} />
             
-            {/* Scene Controls */}
+            {/* Scene Controls - Disabled during transitions */}
             <OrbitControls 
               enableZoom={false} 
               enablePan={false}
@@ -152,6 +133,8 @@ export function ThreeScene({ isZoomedOut = false }) {
               maxDistance={20}
               autoRotate={!isZoomedOut}
               autoRotateSpeed={0.1}
+              enableDamping={true}
+              dampingFactor={0.05}
             />
             
             {/* Enhanced lighting for better surface detail */}
@@ -167,7 +150,7 @@ export function ThreeScene({ isZoomedOut = false }) {
               radius={4}
               position={[0, 0, 0]}
               rotationSpeed={0.001}
-              isReady={!isLoading}
+              isReady={true}
             />
 
             {/* Orbiting Spacecraft */}
