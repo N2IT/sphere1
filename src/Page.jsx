@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react'
 import { ThreeScene } from './components/three-scene'
+import { Terminal } from './components/terminal'
 import { motion, AnimatePresence } from 'framer-motion'
 
 export function PortfolioPage() {
@@ -16,7 +17,7 @@ export function PortfolioPage() {
   const handleGetStarted = () => {
     setIsZoomedOut(true)
     // Delay showing terminal until animations are complete
-    setTimeout(() => setShowTerminal(true), 4000)
+    setTimeout(() => setShowTerminal(true), 5000)
   }
 
   return (
@@ -42,7 +43,7 @@ export function PortfolioPage() {
                 className="text-4xl md:text-6xl lg:text-7xl tracking-[0.3em] font-light text-white mb-4"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: isZoomedOut ? 0 : 1 }}
-                transition={{ duration: 1, delay: isZoomedOut ? 0 : 0.5 }}
+                transition={{ duration: 1, delay: isZoomedOut ? 0 : 0.05 }}
               >
                 TONY EDER
               </motion.h1>
@@ -70,12 +71,12 @@ export function PortfolioPage() {
           ) : (
             <motion.div
               key="terminal"
-              className="w-full max-w-2xl"
+              className="w-full max-w-4xl px-4"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1 }}
             >
-              {/* Terminal component will go here */}
+              <Terminal />
             </motion.div>
           )}
         </AnimatePresence>
