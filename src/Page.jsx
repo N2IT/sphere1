@@ -36,7 +36,7 @@ export function PortfolioPage() {
             TONY EDER
           </h1>
           <p className="text-sm md:text-base tracking-[0.6em] text-blue-200/80 uppercase mb-8">
-            Developer | TPM | Sci-Fi Aficionado
+            Developer | Sci-Fi Aficionado
           </p>
           <motion.button
             onClick={handleGetStarted}

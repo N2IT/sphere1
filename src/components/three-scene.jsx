@@ -29,7 +29,11 @@ function CameraController({ isZoomedOut }) {
   const [animationPhase, setAnimationPhase] = useState(0) // 0: initial, 1: zoomed out, 2: top-right
   const initialPosition = [8, 0, 8]
   const zoomedOutPosition = [16, 0, 16]
-  const finalPosition = [30, 15, 30]
+  const finalPosition = [25, 10, 25]
+  
+  // Define lookAt targets for each phase
+  const initialTarget = [0, 0, 0]
+  const finalTarget = [-45, -15, 0] // Inverted values to move scene to top-right
 
   // Track animation progress
   const animationProgress = useRef(0)
@@ -37,7 +41,7 @@ function CameraController({ isZoomedOut }) {
 
   useFrame(() => {
     const currentTime = Date.now()
-    const deltaTime = (currentTime - lastTime.current) / 1000 // Convert to seconds
+    const deltaTime = (currentTime - lastTime.current) / 1000
     lastTime.current = currentTime
 
     if (!isZoomedOut) {
@@ -49,25 +53,26 @@ function CameraController({ isZoomedOut }) {
       camera.position.x += (initialPosition[0] - camera.position.x) * 0.02
       camera.position.y += (initialPosition[1] - camera.position.y) * 0.02
       camera.position.z += (initialPosition[2] - camera.position.z) * 0.02
+      camera.lookAt(...initialTarget)
       return
     }
 
     // Increment animation progress
     if (animationPhase === 0) {
-      animationProgress.current += deltaTime * 0.5 // Control speed of first phase
+      animationProgress.current += deltaTime * 0.3 // Slower first phase
       if (animationProgress.current >= 1) {
         setAnimationPhase(1)
         animationProgress.current = 0
       }
     } else if (animationPhase === 1) {
-      animationProgress.current += deltaTime * 0.5 // Control speed of second phase
+      animationProgress.current += deltaTime * 0.3 // Slower second phase
     }
 
     // Clamp animation progress
     animationProgress.current = Math.min(animationProgress.current, 1)
 
-    // Calculate target position based on animation phase
-    let targetPosition
+    // Calculate target position and lookAt based on animation phase
+    let targetPosition, currentLookAt
     if (animationPhase === 0) {
       // First phase: Initial position to zoomed out
       targetPosition = {
@@ -75,13 +80,20 @@ function CameraController({ isZoomedOut }) {
         y: initialPosition[1] + (zoomedOutPosition[1] - initialPosition[1]) * animationProgress.current,
         z: initialPosition[2] + (zoomedOutPosition[2] - initialPosition[2]) * animationProgress.current
       }
+      currentLookAt = initialTarget
     } else {
-      // Second phase: Zoomed out to final position
+      // Second phase: Zoomed out to final position with shifted lookAt
       targetPosition = {
         x: zoomedOutPosition[0] + (finalPosition[0] - zoomedOutPosition[0]) * animationProgress.current,
         y: zoomedOutPosition[1] + (finalPosition[1] - zoomedOutPosition[1]) * animationProgress.current,
         z: zoomedOutPosition[2] + (finalPosition[2] - zoomedOutPosition[2]) * animationProgress.current
       }
+      // Smoothly interpolate lookAt target
+      currentLookAt = [
+        initialTarget[0] + (finalTarget[0] - initialTarget[0]) * animationProgress.current,
+        initialTarget[1] + (finalTarget[1] - initialTarget[1]) * animationProgress.current,
+        initialTarget[2] + (finalTarget[2] - initialTarget[2]) * animationProgress.current
+      ]
     }
 
     // Update camera position with easing
@@ -89,8 +101,8 @@ function CameraController({ isZoomedOut }) {
     camera.position.y += (targetPosition.y - camera.position.y) * 0.05
     camera.position.z += (targetPosition.z - camera.position.z) * 0.05
 
-    // Always ensure camera is looking at the center
-    camera.lookAt(0, 0, 0)
+    // Update camera lookAt
+    camera.lookAt(...currentLookAt)
   })
 
   return null
